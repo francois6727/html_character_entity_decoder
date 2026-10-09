@@ -15,3 +15,10 @@ The standard library's `html.unescape` handles named entities but silently drops
 ## Edge case you will hit
 
 A reference like `&#xD800;` (a surrogate codepoint) is returned unchanged, not as a lone surrogate character. If you need to emit raw surrogates into a CESU-8 byte stream, decode *after* this function using your own logic — this library intentionally refuses to produce them.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
